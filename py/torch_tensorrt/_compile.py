@@ -3,12 +3,12 @@ from torch_tensorrt import _enums
 import torch_tensorrt.ts
 from torch_tensorrt import logging
 import torch
-import torch.fx
+# import torch.fx
 from enum import Enum
 
-import torch_tensorrt.fx
-import torch_tensorrt.fx.lower
-from torch_tensorrt.fx.utils import LowerPrecision
+# import torch_tensorrt.fx
+# import torch_tensorrt.fx.lower
+# from torch_tensorrt.fx.utils import LowerPrecision
 
 
 class _IRType(Enum):
@@ -126,28 +126,28 @@ def compile(
         return torch_tensorrt.ts.compile(
             ts_mod, inputs=inputs, enabled_precisions=enabled_precisions, **kwargs
         )
-    elif target_ir == _IRType.fx:
-        if (
-            torch.float16 in enabled_precisions
-            or torch_tensorrt.dtype.half in enabled_precisions
-        ):
-            lower_precision = LowerPrecision.FP16
-        elif (
-            torch.float32 in enabled_precisions
-            or torch_tensorrt.dtype.float in enabled_precisions
-        ):
-            lower_precision = LowerPrecision.FP32
-        else:
-            raise ValueError(f"Precision {enabled_precisions} not supported on FX")
+    # elif target_ir == _IRType.fx:
+    #     if (
+    #         torch.float16 in enabled_precisions
+    #         or torch_tensorrt.dtype.half in enabled_precisions
+    #     ):
+    #         lower_precision = LowerPrecision.FP16
+    #     elif (
+    #         torch.float32 in enabled_precisions
+    #         or torch_tensorrt.dtype.float in enabled_precisions
+    #     ):
+    #         lower_precision = LowerPrecision.FP32
+    #     else:
+    #         raise ValueError(f"Precision {enabled_precisions} not supported on FX")
 
-        return torch_tensorrt.fx.lower.compile(
-            module,
-            inputs,
-            lower_precision=lower_precision,
-            max_batch_size=inputs[0].size(0),
-            explicit_batch_dimension=True,
-            dynamic_batch=False,
-        )
+    #     return torch_tensorrt.fx.lower.compile(
+    #         module,
+    #         inputs,
+    #         lower_precision=lower_precision,
+    #         max_batch_size=inputs[0].size(0),
+    #         explicit_batch_dimension=True,
+    #         dynamic_batch=False,
+    #     )
     else:
         raise RuntimeError("Module is an unknown format or the ir requested is unknown")
 
