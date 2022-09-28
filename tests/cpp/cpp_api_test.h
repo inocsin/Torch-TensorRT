@@ -1,6 +1,7 @@
 #include <utility>
 #include "c10/cuda/CUDACachingAllocator.h"
 #include "cuda_runtime_api.h"
+#include "nvToolsExt.h"
 #include "gtest/gtest.h"
 #include "tests/util/util.h"
 #include "torch/script.h"

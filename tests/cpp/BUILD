@@ -168,6 +168,7 @@ cc_library(
     deps = [
         "//tests/util",
         "@googletest//:gtest_main",
+        "@cuda//:nvToolsExt",
     ] + select({
         ":use_pre_cxx11_abi": ["@libtorch_pre_cxx11_abi//:libtorch"],
         "//conditions:default": ["@libtorch//:libtorch"],

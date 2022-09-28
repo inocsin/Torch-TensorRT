@@ -58,22 +58,22 @@ CudaDevice select_cuda_device(const CudaDevice& engine_device) {
 }
 
 std::vector<at::Tensor> execute_engine(std::vector<at::Tensor> inputs, c10::intrusive_ptr<TRTEngine> compiled_engine) {
-  LOG_DEBUG("Attempting to run engine (ID: " << compiled_engine->name << ")");
+  // LOG_DEBUG("Attempting to run engine (ID: " << compiled_engine->name << ")");
 
-  CudaDevice curr_device = get_current_device();
-  LOG_DEBUG("Current Device: " << curr_device);
+  // CudaDevice curr_device = get_current_device();
+  // LOG_DEBUG("Current Device: " << curr_device);
 
-  if (is_switch_required(curr_device, compiled_engine->device_info)) {
-    // Scan through available CUDA devices and set the CUDA device context correctly
-    CudaDevice device = select_cuda_device(compiled_engine->device_info);
-    set_cuda_device(device);
+  // if (is_switch_required(curr_device, compiled_engine->device_info)) {
+  //   // Scan through available CUDA devices and set the CUDA device context correctly
+  //   CudaDevice device = select_cuda_device(compiled_engine->device_info);
+  //   set_cuda_device(device);
 
-    std::string target_device = "cuda:" + std::to_string(device.id);
+  //   std::string target_device = "cuda:" + std::to_string(device.id);
 
-    for (auto& in : inputs) {
-      in = in.to(torch::Device(target_device));
-    }
-  }
+  //   for (auto& in : inputs) {
+  //     in = in.to(torch::Device(target_device));
+  //   }
+  // }
 
   std::vector<void*> gpu_handles;
 
