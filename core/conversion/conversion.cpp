@@ -212,6 +212,17 @@ void AddInputs(ConversionCtx* ctx, c10::ArrayRef<const torch::jit::Value*> input
 }
 
 void MarkOutputs(ConversionCtx* ctx, at::ArrayRef<const torch::jit::Value*> outputs) {
+  nvinfer1::DataType output_type = ctx->net->getInput(0)->getType();
+  for (size_t i = 0; i < ctx->net->getNbInputs(); ++i) {
+    auto cur_input_type = ctx->net->getInput(i)->getType();
+    if (ctx->enabled_precisions.find(cur_input_type) == ctx->enabled_precisions.end()) {
+      TORCHTRT_THROW_ERROR("Input type is not found in enabled_precisions.");
+    }
+    if (cur_input_type != output_type) {
+      TORCHTRT_THROW_ERROR("Input type and output type should match for a TensorRT network.");
+    }
+  }
+
   for (auto out : outputs) {
     auto it = ctx->value_tensor_map.find(out);
     if (it == ctx->value_tensor_map.end()) {
@@ -272,6 +283,7 @@ void MarkOutputs(ConversionCtx* ctx, at::ArrayRef<const torch::jit::Value*> outp
           ctx->logger, "Marking Output " << out->debugName() << " named " << name << " in engine (ctx.MarkOutput)");
       ctx->num_outputs += 1;
     }
+    ctx->net->getOutput(ctx->net->getNbOutputs() - 1)->setType(output_type);
   }
 }
 
